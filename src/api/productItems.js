@@ -98,3 +98,5 @@ const productItems = [
       score: 220,
     }
   ];
+
+export default productItems;
