@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Icon, Layout } from 'antd';
-import { Link, BrowserRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const HeaderDiv = styled(Layout.Header)`
   max-width:1200px;
@@ -17,10 +17,11 @@ const HeaderDiv = styled(Layout.Header)`
   }
 `;
 
-const TitleText = styled.a`
+const TitleText = styled(Link)`
   color:#333;
   font-size:24px;
   font-weight:bold;
+  text-decoration:none;
 `;
 
 const WishListIcon = styled(Icon)`
@@ -29,14 +30,10 @@ const WishListIcon = styled(Icon)`
 
 const Header = () => (
   <HeaderDiv>
-    <TitleText href='/'>EvanShop</TitleText>
-    <div>
-      <BrowserRouter>
-        <Link to="/wishlist">
-          <WishListIcon type="shopping" theme="filled" />
-        </Link>
-      </BrowserRouter>
-    </div>
+    <TitleText to='/'>EvanShop</TitleText>
+      <Link to="/wishlist">
+        <WishListIcon type="shopping" theme="filled" />
+      </Link>
   </HeaderDiv>
 );
 

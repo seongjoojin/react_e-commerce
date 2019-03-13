@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import Header from '../Header';
 import Home from '../../routes/Home';
 import Products from '../../routes/Products';
+import Wishlist from '../../routes/Wishlist';
 
 const Container = styled(Layout)`
   width:375px;
@@ -41,6 +42,7 @@ const RouterContent = () => (
       <Switch>
         <Route exact={true} path="/" component={Home} />
         <Route exact={true} path="/products" component={Products} />
+        <Route exact={true} path="/wishlist" component={Wishlist} />
         <Redirect from={'*'} to={'/'} />
       </Switch>
     </Content>
