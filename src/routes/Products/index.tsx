@@ -1,8 +1,15 @@
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Card , Icon, Button as AntButton } from 'antd';
 // @ts-ignore
 import productItems from 'api/productItems';
+import { connect } from 'react-redux';
+import { StoreState } from '../../store/modules';
+import {
+  WishItemDataParams,
+  actionCreators as wishsActions,
+} from '../../store/modules/wishLists';
+import {bindActionCreators} from 'redux';
 
 const { Meta } = Card;
 
@@ -35,7 +42,8 @@ interface ISortItems {
 }
 
 interface IProps {
-
+  wishItems: WishItemDataParams[];
+  WishsActions: typeof wishsActions;
 }
 
 interface IState {
@@ -99,13 +107,24 @@ class Products extends React.Component<IProps, IState> {
     );
   }
 
+  onAdd = (id: string): void => {
+    const { WishsActions } = this.props;
+    WishsActions.add(id);
+  };
+
+  onRemove = (id: string): void => {
+    const { WishsActions } = this.props;
+    WishsActions.remove(id);
+  };
+
   render() {
-    const { onMoreGoods } = this;
+    const { onMoreGoods, onAdd, onRemove } = this;
+    const { wishItems } = this.props;
     const { goodsItems, loading } = this.state;
     const list = goodsItems.map(info =>{
       return (<Card key={info.score}
                     cover={<img alt="example" src={info.coverImage}/>}
-                    actions={[<div><Icon type="shopping" />&nbsp;장바구니</div>]}
+                    actions={[<div><Icon type="shopping" />&nbsp;장바구니 담기</div>]}
       >
         <Meta
           title={info.title}
@@ -125,4 +144,12 @@ class Products extends React.Component<IProps, IState> {
   }
 }
 
-export default Products;
+
+export default connect(
+  ({wish}:StoreState ) => ({
+    wishItems: wish.wishItems
+  }),
+  (dispatch) => ({
+    WishsActions: bindActionCreators(wishsActions, dispatch),
+  })
+)(Products);

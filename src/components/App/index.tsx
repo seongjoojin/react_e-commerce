@@ -29,12 +29,6 @@ const Footer = styled(Layout.Footer)`
   padding:32px 16px;
 `;
 
-const App = () => (
-  <Router>
-    <WrappedRoutes />
-  </Router>
-);
-
 const RouterContent = () => (
   <Container>
     <Header />
@@ -51,5 +45,15 @@ const RouterContent = () => (
 );
 
 const WrappedRoutes = withRouter(RouterContent);
+
+class App extends React.Component {
+  render() {
+    return (
+      <Router>
+        <WrappedRoutes />
+      </Router>
+    )
+  }
+}
 
 export default App;
