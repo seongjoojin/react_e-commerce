@@ -1,11 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+// @ts-ignore
+import coupons from 'api/coupons';
 import { StoreState } from '../../store/modules';
 import {
   WishItemDataParams
 } from '../../store/modules/wishLists';
-import { List, Checkbox, InputNumber } from 'antd';
+import { List, Checkbox, InputNumber, Select } from 'antd';
+
+const Option = Select.Option;
 
 const WishTitle = styled.h1`
   background-color: #fff;
@@ -25,6 +29,16 @@ const WishCheckbox = styled(Checkbox)`
   margin-bottom: 16px;
 `;
 
+const WishInputNumber = styled(InputNumber)`
+  display: block;
+  margin-bottom: 16px;
+`;
+
+const WishSelect = styled(Select)`
+  margin: 16px 8px;
+  display: block;
+`;
+
 const RightDiv = styled.div`
 `;
 
@@ -39,7 +53,11 @@ class Wishlist extends React.Component<IProps> {
 
   render() {
     const { wishItems } = this.props;
-    console.log(wishItems);
+    const couponList = coupons.map((coupon: { type: string; title: string; }) => {
+      return (
+        <Option key={coupon.type} value={coupon.type}>{coupon.title}</Option>
+      );
+    });
     return (
       <>
         <WishTitle>장바구니</WishTitle>
@@ -60,7 +78,7 @@ class Wishlist extends React.Component<IProps> {
               extra={
                 <RightDiv>
                   <WishCheckbox />
-                  <InputNumber min={1} defaultValue={1} />
+                  <WishInputNumber min={1} defaultValue={1} />
                 </RightDiv>
               }
             >
@@ -72,11 +90,15 @@ class Wishlist extends React.Component<IProps> {
             </List.Item>
           )}
         />
+        <WishSelect
+          placeholder="쿠폰 선택"
+        >
+          {couponList}
+        </WishSelect>
       </>
     );
   }
 }
-
 
 export default connect(
   ({wish}:StoreState ) => ({

@@ -54,9 +54,6 @@ interface IState {
 }
 
 class Products extends React.Component<IProps, IState> {
-  constructor(props : IProps){
-    super(props);
-  }
 
   state: IState = {
     pageNumber: 1,
@@ -73,7 +70,7 @@ class Products extends React.Component<IProps, IState> {
     this.setState(
       ({ pageNumber }) => ({ pageNumber: pageNumber + 1 })
     );
-    let moreLists = this.onPaginate({ array: this.state.sortItems, page_size: 5, page_number: this.state.pageNumber });
+    let moreLists = this.onPaginate({ array: this.state.sortItems, page_size: 5, page_number: this.state.pageNumber + 1 });
     this.setState(
       ({ goodsItems }) => ({
         goodsItems: goodsItems.concat(moreLists)
