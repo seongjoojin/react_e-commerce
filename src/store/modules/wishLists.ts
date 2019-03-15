@@ -1,6 +1,7 @@
 // types
 
 export interface WishItemDataParams {
+  availableCoupon: any;
   coverImage: string;
   id: string;
   price: number;
@@ -18,9 +19,7 @@ export const REMOVE = "wishList/REMOVE";
 
 interface AddAction {
   type: typeof ADD;
-  meta: {
-    id: string;
-  };
+  payload: WishItemDataParams
 }
 
 interface RemoveAction {
@@ -36,12 +35,10 @@ export type WishActionTypes =
 
 // actions
 
-function add(id: string) {
+function add(newWishItem: WishItemDataParams) {
   return {
     type: ADD,
-    meta: {
-      id
-    }
+    payload: newWishItem
   };
 }
 
@@ -73,7 +70,7 @@ export function wishReducer(
     case ADD:
       return {
         ...state,
-        wishItems: state.wishItems
+        wishItems: state.wishItems.length > 2 ? [...state.wishItems] : [...state.wishItems, action.payload]
       };
     case REMOVE:
       return {

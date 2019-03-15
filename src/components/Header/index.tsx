@@ -1,7 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, Layout } from 'antd';
+import { Icon, Layout, Badge } from 'antd';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { StoreState } from '../../store/modules';
+import {
+  WishItemDataParams
+} from '../../store/modules/wishLists';
+import {bindActionCreators} from 'redux';
 
 const HeaderDiv = styled(Layout.Header)`
   max-width:1200px;
@@ -26,15 +32,44 @@ const TitleText = styled(Link)`
 
 const WishListIcon = styled(Icon)`
   line-height:64px;
+  svg {
+    width: 20px;
+    height: 20px;
+  }
 `;
 
-const Header = () => (
-  <HeaderDiv>
-    <TitleText to='/'>EvanShop</TitleText>
-      <Link to="/wishlist">
-        <WishListIcon type="shopping" theme="filled" />
-      </Link>
-  </HeaderDiv>
-);
+const WishBadge = styled(Badge)`
+  .ant-badge-count {
+    top: 15px;
+  }
+`;
 
-export default Header
+interface IProps {
+  wishItems: WishItemDataParams[]
+}
+
+class Header extends React.Component<IProps> {
+  constructor(props : IProps){
+    super(props);
+  }
+
+  render() {
+    const { wishItems } = this.props;
+    return (
+      <HeaderDiv>
+        <TitleText to='/'>EvanShop</TitleText>
+        <Link to="/wishlist">
+          <WishBadge count={wishItems.length}>
+            <WishListIcon type="shopping" theme="filled"/>
+          </WishBadge>
+        </Link>
+      </HeaderDiv>
+    )
+  }
+}
+
+export default connect(
+  ({wish}:StoreState ) => ({
+    wishItems: wish.wishItems
+  })
+)(Header);

@@ -54,6 +54,10 @@ interface IState {
 }
 
 class Products extends React.Component<IProps, IState> {
+  constructor(props : IProps){
+    super(props);
+  }
+
   state: IState = {
     pageNumber: 1,
     sortItems: [],
@@ -107,9 +111,22 @@ class Products extends React.Component<IProps, IState> {
     );
   }
 
-  onAdd = (id: string): void => {
+  onAdd = (
+    availableCoupon: any,
+    coverImage: string,
+    id: string,
+    price: number,
+    score: number,
+    title: string): void => {
     const { WishsActions } = this.props;
-    WishsActions.add(id);
+    WishsActions.add({
+      availableCoupon,
+      coverImage,
+      id,
+      price,
+      score,
+      title,
+    });
   };
 
   onRemove = (id: string): void => {
@@ -122,9 +139,24 @@ class Products extends React.Component<IProps, IState> {
     const { wishItems } = this.props;
     const { goodsItems, loading } = this.state;
     const list = goodsItems.map(info =>{
-      return (<Card key={info.score}
+      const items = wishItems.filter(wish => wish.id === info.id);
+      return (<Card key={info.id}
                     cover={<img alt="example" src={info.coverImage}/>}
-                    actions={[<div><Icon type="shopping" />&nbsp;장바구니 담기</div>]}
+                    actions={[
+                      <div
+                        onClick={() =>{
+                          if (wishItems.length > 0) {
+                            items.length !== 1 ?
+                              onAdd(info.availableCoupon, info.coverImage, info.id, info.price, info.score, info.title) :
+                              onRemove(info.id)
+                          } else {
+                            onAdd(info.availableCoupon, info.coverImage, info.id, info.price, info.score, info.title)
+                          }
+                        }}
+                      >
+                        <Icon type="shopping" />&nbsp; {items.length !== 1 ? "장바구니 추가" : "장바구니 빼기"}
+                      </div>
+                    ]}
       >
         <Meta
           title={info.title}
