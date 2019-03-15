@@ -7,7 +7,6 @@ import { StoreState } from '../../store/modules';
 import {
   WishItemDataParams
 } from '../../store/modules/wishLists';
-import {bindActionCreators} from 'redux';
 
 const HeaderDiv = styled(Layout.Header)`
   max-width:1200px;

@@ -112,7 +112,7 @@ class Products extends React.Component<IProps, IState> {
   }
 
   onAdd = (
-    availableCoupon: any,
+    availableCoupon: undefined | boolean,
     coverImage: string,
     id: string,
     price: number,

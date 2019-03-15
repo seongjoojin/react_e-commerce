@@ -1,7 +1,7 @@
 // types
 
 export interface WishItemDataParams {
-  availableCoupon: any;
+  availableCoupon: undefined | boolean;
   coverImage: string;
   id: string;
   price: number;
