@@ -5,7 +5,7 @@ import { StoreState } from '../../store/modules';
 import {
   WishItemDataParams
 } from '../../store/modules/wishLists';
-import { List, Icon } from 'antd';
+import { List, Checkbox, InputNumber } from 'antd';
 
 const WishTitle = styled.h1`
   background-color: #fff;
@@ -17,6 +17,15 @@ const WishTitle = styled.h1`
 const WishList = styled(List)`
   background-color: #fff;
   padding: 0 8px;
+`;
+
+const WishCheckbox = styled(Checkbox)`
+  display: block;
+  text-align: right;
+  margin-bottom: 16px;
+`;
+
+const RightDiv = styled.div`
 `;
 
 interface IProps {
@@ -48,6 +57,12 @@ class Wishlist extends React.Component<IProps> {
           }) => (
             <List.Item
               key={item.id}
+              extra={
+                <RightDiv>
+                  <WishCheckbox />
+                  <InputNumber min={1} defaultValue={1} />
+                </RightDiv>
+              }
             >
               <List.Item.Meta
                 avatar={<img width={100} alt="logo" src={item.coverImage} />}
