@@ -114,7 +114,9 @@ class Products extends React.Component<IProps, IState> {
     id: string,
     price: number,
     score: number,
-    title: string): void => {
+    title: string,
+    count: number,
+    check: boolean): void => {
     const { WishsActions } = this.props;
     WishsActions.add({
       availableCoupon,
@@ -123,6 +125,8 @@ class Products extends React.Component<IProps, IState> {
       price,
       score,
       title,
+      count,
+      check,
     });
   };
 
@@ -144,10 +148,10 @@ class Products extends React.Component<IProps, IState> {
                         onClick={() =>{
                           if (wishItems.length > 0) {
                             items.length !== 1 ?
-                              onAdd(info.availableCoupon, info.coverImage, info.id, info.price, info.score, info.title) :
+                              onAdd(info.availableCoupon, info.coverImage, info.id, info.price, info.score, info.title, 1, false) :
                               onRemove(info.id)
                           } else {
-                            onAdd(info.availableCoupon, info.coverImage, info.id, info.price, info.score, info.title)
+                            onAdd(info.availableCoupon, info.coverImage, info.id, info.price, info.score, info.title, 1, false)
                           }
                         }}
                       >
