@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Card , Icon, Button as AntButton } from 'antd';
-// @ts-ignore
-import productItems from 'api/productItems';
+import productItems from '../../api/productItems';
 import { connect } from 'react-redux';
 import { StoreState } from '../../store/modules';
 import {
@@ -54,11 +53,6 @@ interface IState {
 }
 
 class Products extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-    this._onMoreGoods = this._onMoreGoods.bind(this);
-  }
-
   state: IState = {
     pageNumber: 1,
     sortItems: [],
@@ -67,25 +61,21 @@ class Products extends React.Component<IProps, IState> {
   };
 
   // 더 보기 함수
-  async _onMoreGoods() {
-    await this.setState(
-      () => ({ loading: true})
+  _addPageNumber = () => {
+    this.setState(
+      (state) =>  ({ pageNumber: state.pageNumber + 1  }),
+      () => {this._onMoreGoods();}
     );
-    await this.setState(
-      ({ pageNumber }) => ({ pageNumber: pageNumber + 1 })
-    );
+  };
+
+  _onMoreGoods = () => {
     let moreLists = this._onPaginate({
       array: this.state.sortItems, page_size: 5, page_number: this.state.pageNumber
     });
-    await this.setState(
-      ({ goodsItems }) => ({
-        goodsItems: goodsItems.concat(moreLists)
-      })
-    );
-    await this.setState(
-      () => ({ loading: false})
-    );
-  }
+    this.setState((state) =>  {
+      return {goodsItems: state.goodsItems.concat(moreLists)}
+    });
+  };
 
   // 페이징 함수
   _onPaginate = (parameters: { array: any, page_size: number, page_number: number }) => {
@@ -94,26 +84,21 @@ class Products extends React.Component<IProps, IState> {
     return array.slice(page_number * page_size, (page_number + 1) * page_size);
   };
 
-  async componentDidMount() {
-    await this.setState(
-      () => ({ sortItems: productItems.sort((a: { score: number; }, b: { score: number; }) => {
-          if (a.score > b.score) {
-            return 1;
-          }
-          if (a.score < b.score) {
-            return -1;
-          }
-          return 0;
-        })
-      })
-    );
-    await this.setState(
-      () => ({
-        goodsItems: this._onPaginate({
-          array: this.state.sortItems, page_size: 5, page_number: this.state.pageNumber
-        })
-      })
-    );
+  componentDidMount() {
+    const sortItems = productItems.sort((a: { score: number; }, b: { score: number; }) => {
+      if (a.score > b.score) {
+        return 1;
+      }
+      if (a.score < b.score) {
+        return -1;
+      }
+      return 0;
+    });
+    this.setState({ sortItems });
+    const goodsItems = this._onPaginate({
+      array: sortItems, page_size: 5, page_number: this.state.pageNumber
+    });
+    this.setState({ goodsItems });
   }
 
   _onAdd = (
@@ -144,9 +129,9 @@ class Products extends React.Component<IProps, IState> {
   };
 
   render() {
-    const { _onMoreGoods, _onAdd, _onRemove } = this;
+    const { _addPageNumber, _onAdd, _onRemove } = this;
     const { wishItems } = this.props;
-    const { goodsItems, loading } = this.state;
+    const { goodsItems } = this.state;
     const list = goodsItems.map(info =>{
       const items = wishItems.filter(wish => wish.id === info.id);
       return (<Card key={info.id}
@@ -195,7 +180,7 @@ class Products extends React.Component<IProps, IState> {
       <ProductList>
         {list}
       </ProductList>
-      <MoreViewButton type="primary" loading={loading} onClick={_onMoreGoods} htmlType="button">
+      <MoreViewButton type="primary" onClick={_addPageNumber} htmlType="button">
         More View
       </MoreViewButton>
     </>)

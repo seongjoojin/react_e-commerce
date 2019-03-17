@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-// @ts-ignore
-import coupons from 'api/coupons';
+import coupons from '../../api/coupons';
 import { StoreState } from '../../store/modules';
 import {
   WishItemDataParams,
@@ -14,6 +13,8 @@ import { bindActionCreators } from 'redux';
 const Option = Select.Option;
 
 const WishTitle = styled.h1`
+
+
   background-color: #fff;
   margin: 0;
   padding: 8px;
@@ -70,12 +71,10 @@ interface IState {
 }
 
 class Wishlist extends React.Component<IProps, IState> {
-
-  constructor(props: IProps){
+  constructor(props: IProps) {
     super(props);
     this._changeCount = this._changeCount.bind(this);
     this._changeCheck = this._changeCheck.bind(this);
-    this._changeSelect = this._changeSelect.bind(this);
   }
 
   state: IState = {
@@ -83,40 +82,40 @@ class Wishlist extends React.Component<IProps, IState> {
     selectCoupon: null
   };
 
-  async _changeCount(value: any, id: string) {
+  _changeCount = async (value: any, id: string) => {
     const { WishsActions } = this.props;
     await WishsActions.changeCount(id, value);
     await this._sumWish();
-  }
+  };
 
-  async _changeCheck(value: any, id: string) {
+  _changeCheck = async (value: any, id: string) => {
     const { WishsActions } = this.props;
     await WishsActions.changeCheck(id, value.target.checked);
     if (value) {
       await this._sumWish();
     }
-  }
+  };
 
-  async _changeSelect(value: any) {
-    await this.setState(
-      () => ({ selectCoupon: value })
+  _changeSelect = (value: any) => {
+    this.setState(
+      () => ({ selectCoupon: value }),
+      () => { this._sumWish() }
     );
-    await this._sumWish();
-  }
+  };
 
-  async _sumWish() {
+  _sumWish() {
     const { wishItems } = this.props;
     const { selectCoupon } = this.state;
     let sumNumber = 0;
     switch (selectCoupon) {
       case 'rate':
         const rates = coupons.map(
-          (coupon: { discountRate: number; type: string; })=> {
+          (coupon: any)=> {
             return coupon.type === 'rate' ? coupon.discountRate : null ;
           }
         );
         const rate = rates.filter((rate: null | string)=> rate !== null)[0];
-        await wishItems.map(wish=>{
+        wishItems.map(wish=>{
           return wish.check ?
             wish.availableCoupon ?
               sumNumber = sumNumber + (wish.price * wish.count) :
@@ -127,12 +126,12 @@ class Wishlist extends React.Component<IProps, IState> {
         break;
       case 'amount':
         const amounts = coupons.map(
-          (coupon: { discountAmount: number; type: string; })=> {
+          (coupon: any)=> {
             return coupon.type === 'amount' ? coupon.discountAmount : null ;
           }
         );
         const amount = amounts.filter((amount: null | string)=> amount !== null)[0];
-        await wishItems.map(wish=>{
+        wishItems.map(wish=>{
           return wish.check ?
             wish.availableCoupon ?
               sumNumber = sumNumber + (wish.price * wish.count) :
@@ -142,13 +141,11 @@ class Wishlist extends React.Component<IProps, IState> {
         });
         break;
       default:
-        await wishItems.map(wish=>{
+        wishItems.map(wish=>{
           return wish.check ? sumNumber = sumNumber + (wish.price * wish.count) : sumNumber;
         });
     }
-    await this.setState(
-      () => ({ totalAmount: sumNumber })
-    );
+    this.setState({ totalAmount: sumNumber });
   }
 
   render() {
