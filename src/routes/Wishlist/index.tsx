@@ -73,9 +73,9 @@ class Wishlist extends React.Component<IProps, IState> {
 
   constructor(props: IProps){
     super(props);
-    this.changeCount = this.changeCount.bind(this);
-    this.changeCheck = this.changeCheck.bind(this);
-    this.changeSelect = this.changeSelect.bind(this);
+    this._changeCount = this._changeCount.bind(this);
+    this._changeCheck = this._changeCheck.bind(this);
+    this._changeSelect = this._changeSelect.bind(this);
   }
 
   state: IState = {
@@ -83,28 +83,28 @@ class Wishlist extends React.Component<IProps, IState> {
     selectCoupon: null
   };
 
-  async changeCount(value: any, id: string) {
+  async _changeCount(value: any, id: string) {
     const { WishsActions } = this.props;
     await WishsActions.changeCount(id, value);
-    await this.sumWish();
+    await this._sumWish();
   }
 
-  async changeCheck(value: any, id: string) {
+  async _changeCheck(value: any, id: string) {
     const { WishsActions } = this.props;
     await WishsActions.changeCheck(id, value.target.checked);
     if (value) {
-      await this.sumWish();
+      await this._sumWish();
     }
   }
 
-  async changeSelect(value: any) {
+  async _changeSelect(value: any) {
     await this.setState(
       () => ({ selectCoupon: value })
     );
-    await this.sumWish();
+    await this._sumWish();
   }
 
-  async sumWish() {
+  async _sumWish() {
     const { wishItems } = this.props;
     const { selectCoupon } = this.state;
     let sumNumber = 0;
@@ -152,7 +152,7 @@ class Wishlist extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { changeCount, changeCheck, changeSelect } = this;
+    const { _changeCount, _changeCheck, _changeSelect } = this;
     const { wishItems } = this.props;
     const { totalAmount } = this.state;
     const couponList = coupons.map((coupon: { type: string; title: string; }) => {
@@ -182,12 +182,12 @@ class Wishlist extends React.Component<IProps, IState> {
               extra={
                 <RightDiv>
                   <WishCheckbox
-                    onChange={value =>changeCheck(value ,item.id)}
+                    onChange={value =>_changeCheck(value ,item.id)}
                   />
                   <WishInputNumber
                     min={1}
                     defaultValue={1}
-                    onChange={value =>changeCount(value, item.id)}
+                    onChange={value =>_changeCount(value, item.id)}
                   />
                 </RightDiv>
               }
@@ -202,7 +202,7 @@ class Wishlist extends React.Component<IProps, IState> {
         />
         <WishSelect
           placeholder="쿠폰 선택"
-          onChange={value =>changeSelect(value)}
+          onChange={value =>_changeSelect(value)}
         >
           {couponList}
         </WishSelect>

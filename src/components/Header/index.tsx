@@ -48,10 +48,6 @@ interface IProps {
 }
 
 class Header extends React.Component<IProps> {
-  constructor(props : IProps){
-    super(props);
-  }
-
   render() {
     const { wishItems } = this.props;
     return (

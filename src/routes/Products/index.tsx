@@ -54,6 +54,10 @@ interface IState {
 }
 
 class Products extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
+    super(props);
+    this._onMoreGoods = this._onMoreGoods.bind(this);
+  }
 
   state: IState = {
     pageNumber: 1,
@@ -63,14 +67,14 @@ class Products extends React.Component<IProps, IState> {
   };
 
   // 더 보기 함수
-  async onMoreGoods() {
+  async _onMoreGoods() {
     await this.setState(
       () => ({ loading: true})
     );
     await this.setState(
       ({ pageNumber }) => ({ pageNumber: pageNumber + 1 })
     );
-    let moreLists = this.onPaginate({
+    let moreLists = this._onPaginate({
       array: this.state.sortItems, page_size: 5, page_number: this.state.pageNumber
     });
     await this.setState(
@@ -84,7 +88,7 @@ class Products extends React.Component<IProps, IState> {
   }
 
   // 페이징 함수
-  onPaginate = (parameters: { array: any, page_size: number, page_number: number }) => {
+  _onPaginate = (parameters: { array: any, page_size: number, page_number: number }) => {
     let { array, page_size, page_number } = parameters;
     --page_number;
     return array.slice(page_number * page_size, (page_number + 1) * page_size);
@@ -105,12 +109,14 @@ class Products extends React.Component<IProps, IState> {
     );
     await this.setState(
       () => ({
-        goodsItems: this.onPaginate({ array: this.state.sortItems, page_size: 5, page_number: this.state.pageNumber })
+        goodsItems: this._onPaginate({
+          array: this.state.sortItems, page_size: 5, page_number: this.state.pageNumber
+        })
       })
     );
   }
 
-  onAdd = (
+  _onAdd = (
     availableCoupon: undefined | boolean,
     coverImage: string,
     id: string,
@@ -132,13 +138,13 @@ class Products extends React.Component<IProps, IState> {
     });
   };
 
-  onRemove = (id: string): void => {
+  _onRemove = (id: string): void => {
     const { WishsActions } = this.props;
     WishsActions.remove(id);
   };
 
   render() {
-    const { onMoreGoods, onAdd, onRemove } = this;
+    const { _onMoreGoods, _onAdd, _onRemove } = this;
     const { wishItems } = this.props;
     const { goodsItems, loading } = this.state;
     const list = goodsItems.map(info =>{
@@ -150,14 +156,31 @@ class Products extends React.Component<IProps, IState> {
                         onClick={() =>{
                           if (wishItems.length > 0) {
                             items.length !== 1 ?
-                              onAdd(info.availableCoupon, info.coverImage, info.id, info.price, info.score, info.title, 1, false) :
-                              onRemove(info.id)
+                              _onAdd(
+                                info.availableCoupon,
+                                info.coverImage,
+                                info.id,
+                                info.price,
+                                info.score,
+                                info.title,
+                                1, false
+                              ) :
+                              _onRemove(info.id)
                           } else {
-                            onAdd(info.availableCoupon, info.coverImage, info.id, info.price, info.score, info.title, 1, false)
+                            _onAdd(
+                              info.availableCoupon,
+                              info.coverImage,
+                              info.id,
+                              info.price,
+                              info.score,
+                              info.title,
+                              1, false
+                            )
                           }
                         }}
                       >
-                        <Icon type="shopping" />&nbsp; {items.length !== 1 ? "장바구니 추가" : "장바구니 빼기"}
+                        <Icon type="shopping" />
+                        &nbsp; {items.length !== 1 ? "장바구니 추가" : "장바구니 빼기"}
                       </div>
                     ]}
       >
@@ -172,7 +195,7 @@ class Products extends React.Component<IProps, IState> {
       <ProductList>
         {list}
       </ProductList>
-      <MoreViewButton type="primary" loading={loading} onClick={onMoreGoods} htmlType="button">
+      <MoreViewButton type="primary" loading={loading} onClick={_onMoreGoods} htmlType="button">
         More View
       </MoreViewButton>
     </>)

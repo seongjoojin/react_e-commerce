@@ -5,7 +5,6 @@ import {
   Route,
   Switch,
   Redirect,
-  withRouter
 } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../Header';
@@ -44,13 +43,11 @@ const RouterContent = () => (
   </Container>
 );
 
-const WrappedRoutes = withRouter(RouterContent);
-
 class App extends React.Component {
   render() {
     return (
       <Router>
-        <WrappedRoutes />
+        <RouterContent />
       </Router>
     )
   }
