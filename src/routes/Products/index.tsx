@@ -63,23 +63,25 @@ class Products extends React.Component<IProps, IState> {
   };
 
   // 더 보기 함수
-  onMoreGoods = (): void => {
-    this.setState(
+  async onMoreGoods() {
+    await this.setState(
       () => ({ loading: true})
     );
-    this.setState(
+    await this.setState(
       ({ pageNumber }) => ({ pageNumber: pageNumber + 1 })
     );
-    let moreLists = this.onPaginate({ array: this.state.sortItems, page_size: 5, page_number: this.state.pageNumber + 1 });
-    this.setState(
+    let moreLists = this.onPaginate({
+      array: this.state.sortItems, page_size: 5, page_number: this.state.pageNumber
+    });
+    await this.setState(
       ({ goodsItems }) => ({
         goodsItems: goodsItems.concat(moreLists)
       })
     );
-    this.setState(
+    await this.setState(
       () => ({ loading: false})
     );
-  };
+  }
 
   // 페이징 함수
   onPaginate = (parameters: { array: any, page_size: number, page_number: number }) => {

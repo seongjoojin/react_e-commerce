@@ -1,5 +1,4 @@
 // types
-
 export interface WishItemDataParams {
   availableCoupon: undefined | boolean;
   coverImage: string;
@@ -15,11 +14,10 @@ export interface WishState {
   wishItems: WishItemDataParams[];
 }
 
-
 export const ADD = 'wishList/ADD';
 export const REMOVE = 'wishList/REMOVE';
-export const CHANGE = 'wishList/CHANGE';
-export const CHECK = 'wishList/CHECK';
+export const CHANGE_COUNT = 'wishList/CHANGE_COUNT';
+export const CHANGE_CHECK = 'wishList/CHANGE_CHECK';
 
 interface AddAction {
   type: typeof ADD;
@@ -33,16 +31,16 @@ interface RemoveAction {
   };
 }
 
-interface ChangeAction {
-  type: typeof CHANGE;
+interface ChangeCountAction {
+  type: typeof CHANGE_COUNT;
   meta: {
     id: string;
     count: number;
   };
 }
 
-interface CheckAction {
-  type: typeof CHECK;
+interface ChangeCheckAction {
+  type: typeof CHANGE_CHECK;
   meta: {
     id: string;
     check: boolean;
@@ -52,11 +50,10 @@ interface CheckAction {
 export type WishActionTypes =
   | AddAction
   | RemoveAction
-  | ChangeAction
-  | CheckAction
+  | ChangeCountAction
+  | ChangeCheckAction
 
 // actions
-
 function add(newWishItem: WishItemDataParams) {
   return {
     type: ADD,
@@ -73,9 +70,9 @@ function remove(id: string) {
   };
 }
 
-function change(id:string, count: number,) {
+function changeCount(id:string, count: number,) {
   return {
-    type: CHANGE,
+    type: CHANGE_COUNT,
     meta: {
       id,
       count,
@@ -83,9 +80,9 @@ function change(id:string, count: number,) {
   };
 }
 
-function check(id:string, check: boolean,) {
+function changeCheck(id:string, check: boolean,) {
   return {
-    type: CHECK,
+    type: CHANGE_CHECK,
     meta: {
       id,
       check,
@@ -96,12 +93,11 @@ function check(id:string, check: boolean,) {
 export const actionCreators = {
   add,
   remove,
-  change,
-  check,
+  changeCount,
+  changeCheck,
 };
 
 // reducers
-
 const initialState: WishState = {
   wishItems: []
 };
@@ -121,7 +117,7 @@ export function wishReducer(
         ...state,
         wishItems: state.wishItems.filter(wish => wish.id !== action.meta.id)
       };
-    case CHANGE:
+    case CHANGE_COUNT:
       return Object.assign({}, state, {
         wishItems: state.wishItems.map(wish => {
           if (wish.id !== action.meta.id) {
@@ -133,7 +129,7 @@ export function wishReducer(
           })
         })
       });
-    case CHECK:
+    case CHANGE_CHECK:
       return Object.assign({}, state, {
         wishItems: state.wishItems.map(wish => {
           if (wish.id !== action.meta.id) {
