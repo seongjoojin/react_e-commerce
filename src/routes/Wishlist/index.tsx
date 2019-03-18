@@ -71,12 +71,6 @@ interface IState {
 }
 
 class Wishlist extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-    this._changeCount = this._changeCount.bind(this);
-    this._changeCheck = this._changeCheck.bind(this);
-  }
-
   state: IState = {
     totalAmount: 0,
     selectCoupon: null
@@ -84,22 +78,17 @@ class Wishlist extends React.Component<IProps, IState> {
 
   _changeCount = async (value: any, id: string) => {
     const { WishsActions } = this.props;
-    await WishsActions.changeCount(id, value);
-    await this._sumWish();
+    WishsActions.changeCount(id, value);
   };
 
   _changeCheck = async (value: any, id: string) => {
     const { WishsActions } = this.props;
-    await WishsActions.changeCheck(id, value.target.checked);
-    if (value) {
-      await this._sumWish();
-    }
+    WishsActions.changeCheck(id, value.target.checked);
   };
 
   _changeSelect = (value: any) => {
     this.setState(
-      () => ({ selectCoupon: value }),
-      () => { this._sumWish() }
+      () => ({ selectCoupon: value })
     );
   };
 
@@ -147,6 +136,12 @@ class Wishlist extends React.Component<IProps, IState> {
     }
     this.setState({ totalAmount: sumNumber });
   }
+
+  componentDidUpdate(prevProps:IProps, prevState: IState): void {
+    if (this.state.selectCoupon !== prevState.selectCoupon) this._sumWish();
+    if (this.props.wishItems !== prevProps.wishItems) this._sumWish();
+  }
+
 
   render() {
     const { _changeCount, _changeCheck, _changeSelect } = this;

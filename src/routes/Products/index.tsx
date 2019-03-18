@@ -61,27 +61,24 @@ class Products extends React.Component<IProps, IState> {
   };
 
   // 더 보기 함수
-  _addPageNumber = () => {
+  _onMoreGoods = () => {
+    let currentPageNumber = this.state.pageNumber;
+    currentPageNumber = currentPageNumber + 1;
+    let moreLists = this._onPaginate(
+      this.state.sortItems, 5, currentPageNumber
+    );
     this.setState(
-      (state) =>  ({ pageNumber: state.pageNumber + 1  }),
-      () => {this._onMoreGoods();}
+      (state) =>  ({goodsItems: state.goodsItems.concat(moreLists)})
+    );
+    this.setState(
+      (state) =>  ({ pageNumber: state.pageNumber + 1  })
     );
   };
 
-  _onMoreGoods = () => {
-    let moreLists = this._onPaginate({
-      array: this.state.sortItems, page_size: 5, page_number: this.state.pageNumber
-    });
-    this.setState((state) =>  {
-      return {goodsItems: state.goodsItems.concat(moreLists)}
-    });
-  };
-
   // 페이징 함수
-  _onPaginate = (parameters: { array: any, page_size: number, page_number: number }) => {
-    let { array, page_size, page_number } = parameters;
+  _onPaginate = ( products: any[], page_size: number, page_number: number ) => {
     --page_number;
-    return array.slice(page_number * page_size, (page_number + 1) * page_size);
+    return products.slice(page_number * page_size, (page_number + 1) * page_size);
   };
 
   componentDidMount() {
@@ -94,10 +91,8 @@ class Products extends React.Component<IProps, IState> {
       }
       return 0;
     });
+    const goodsItems = this._onPaginate( sortItems, 5,  this.state.pageNumber);
     this.setState({ sortItems });
-    const goodsItems = this._onPaginate({
-      array: sortItems, page_size: 5, page_number: this.state.pageNumber
-    });
     this.setState({ goodsItems });
   }
 
@@ -129,7 +124,7 @@ class Products extends React.Component<IProps, IState> {
   };
 
   render() {
-    const { _addPageNumber, _onAdd, _onRemove } = this;
+    const { _onMoreGoods, _onAdd, _onRemove } = this;
     const { wishItems } = this.props;
     const { goodsItems } = this.state;
     const list = goodsItems.map(info =>{
@@ -180,7 +175,7 @@ class Products extends React.Component<IProps, IState> {
       <ProductList>
         {list}
       </ProductList>
-      <MoreViewButton type="primary" onClick={_addPageNumber} htmlType="button">
+      <MoreViewButton type="primary" onClick={_onMoreGoods} htmlType="button">
         More View
       </MoreViewButton>
     </>)
