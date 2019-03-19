@@ -1,14 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Card , Icon, Button as AntButton } from 'antd';
+import { Button as AntButton, Card, Icon, message } from 'antd';
 import productItems from '../../api/productItems';
 import { connect } from 'react-redux';
 import { StoreState } from '../../store/modules';
-import {
-  WishItemDataParams,
-  actionCreators as wishsActions,
-} from '../../store/modules/wishLists';
-import {bindActionCreators} from 'redux';
+import { actionCreators as wishsActions, WishItemDataParams } from '../../store/modules/wishLists';
+import { bindActionCreators } from 'redux';
 
 const { Meta } = Card;
 
@@ -62,23 +59,28 @@ class Products extends React.Component<IProps, IState> {
 
   // 더 보기 함수
   _onMoreGoods = () => {
-    let currentPageNumber = this.state.pageNumber;
-    currentPageNumber = currentPageNumber + 1;
+    let nextPage = this.state.pageNumber + 1;
     let moreLists = this._onPaginate(
-      this.state.sortItems, 5, currentPageNumber
+      this.state.sortItems, 5, nextPage
     );
-    this.setState(
-      (state) =>  ({goodsItems: state.goodsItems.concat(moreLists)})
-    );
-    this.setState(
-      (state) =>  ({ pageNumber: state.pageNumber + 1  })
-    );
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        goodsItems: prevState.goodsItems.concat(moreLists),
+        pageNumber: prevState.pageNumber + 1
+      };
+    })
   };
 
   // 페이징 함수
-  _onPaginate = ( products: any[], page_size: number, page_number: number ) => {
-    --page_number;
-    return products.slice(page_number * page_size, (page_number + 1) * page_size);
+  _onPaginate = ( products: any[], pageSize: number, pageNumber: number ) => {
+    let start = (pageNumber - 1) * 5;
+    let end = start + pageSize;
+    let moreList = products.slice(start, end);
+    if(moreList.length === 0) {
+      message.info('마지막 페이지 입니다.');
+      return [];}
+    else return moreList;
   };
 
   componentDidMount() {
@@ -92,8 +94,7 @@ class Products extends React.Component<IProps, IState> {
       return 0;
     });
     const goodsItems = this._onPaginate( sortItems, 5,  this.state.pageNumber);
-    this.setState({ sortItems });
-    this.setState({ goodsItems });
+    this.setState({ sortItems, goodsItems });
   }
 
   _onAdd = (
