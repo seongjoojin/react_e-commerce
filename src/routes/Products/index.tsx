@@ -50,12 +50,25 @@ interface IState {
 }
 
 class Products extends React.Component<IProps, IState> {
-  state: IState = {
-    pageNumber: 1,
-    sortItems: [],
-    goodsItems: [],
-    loading: false
-  };
+  constructor(props: IProps){
+    super(props);
+    const sortItems = productItems.sort((a: { score: number; }, b: { score: number; }) => {
+      if (a.score > b.score) {
+        return 1;
+      }
+      if (a.score < b.score) {
+        return -1;
+      }
+      return 0;
+    });
+    const goodsItems = this._onPaginate( sortItems, 5, 1);
+    this.state = {
+      pageNumber: 1,
+      sortItems,
+      goodsItems,
+      loading: false
+    };
+  }
 
   // 더 보기 함수
   _onMoreGoods = () => {
@@ -63,13 +76,15 @@ class Products extends React.Component<IProps, IState> {
     let moreLists = this._onPaginate(
       this.state.sortItems, 5, nextPage
     );
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        goodsItems: prevState.goodsItems.concat(moreLists),
-        pageNumber: prevState.pageNumber + 1
-      };
-    })
+    if(moreLists.length > 0) {
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          goodsItems: prevState.goodsItems.concat(moreLists),
+          pageNumber: nextPage
+        };
+      })
+    }
   };
 
   // 페이징 함수
@@ -84,17 +99,12 @@ class Products extends React.Component<IProps, IState> {
   };
 
   componentDidMount() {
-    const sortItems = productItems.sort((a: { score: number; }, b: { score: number; }) => {
-      if (a.score > b.score) {
-        return 1;
+    this.setState(() => {
+      return {
+        sortItems: this.state.sortItems,
+        goodsItems: this.state.goodsItems
       }
-      if (a.score < b.score) {
-        return -1;
-      }
-      return 0;
-    });
-    const goodsItems = this._onPaginate( sortItems, 5,  this.state.pageNumber);
-    this.setState({ sortItems, goodsItems });
+    })
   }
 
   _onAdd = (

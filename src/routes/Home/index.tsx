@@ -8,6 +8,7 @@ const MainBanner = styled.div`
   width:100%;
   position:relative;
   img {
+    display: block;
     opacity:0.4;
     width:100%;
   }
@@ -51,7 +52,7 @@ const NavList = styled.ul`
 const Home = () => (
   <>
     <MainBanner>
-      <img src="/img/banner.jpeg" alt="이벤트"/>
+      <img src="/img/banner.jpeg" alt="이벤트" />
       <BannerText>오픈 이벤트!<br />회원가입하고 10,000원 쿠폰 가져가세요.</BannerText>
       <BannerButton type="primary" shape="round" size="large">쿠폰 받기</BannerButton>
     </MainBanner>
