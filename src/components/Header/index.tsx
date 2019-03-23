@@ -9,6 +9,9 @@ import {
 } from '../../store/modules/wishLists';
 
 const HeaderDiv = styled(Layout.Header)`
+  z-index: 9999;
+  position:sticky;
+  top:0;
   max-width:1200px;
   margin:0 auto;
   padding:0 16px;
@@ -26,7 +29,7 @@ const TitleText = styled(Link)`
   color:#333;
   font-size:24px;
   font-weight:bold;
-  text-decoration:none;
+  text-decoration:none !important;
 `;
 
 const WishListIcon = styled(Icon)`
