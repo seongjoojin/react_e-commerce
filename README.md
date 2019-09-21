@@ -1,5 +1,7 @@
 ## 사용한 라이브러리
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/seongjoojin/react_e-commerce.svg)](https://greenkeeper.io/)
+
 - react
 - react-router-dom (react span앱에서의 페이지이동을 위해서 사용하였습니다.)
 - ant design, @types/react-router-dom (기본적인 ui의 구성을 위하여 사용하였습니다.)
